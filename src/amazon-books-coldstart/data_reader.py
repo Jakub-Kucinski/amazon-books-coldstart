@@ -99,10 +99,10 @@ class Data_reader():
         for id in self.books.keys():
             book = self.books[id]
             if book.id in train_indices:
-                books['train'][id] = review
+                books['train'][id] = book
             if book.id in valid_indices:
-                books['validation'][id] = review
+                books['validation'][id] = book
             if book.id in test_indices:
-                books['test'][id] = review
+                books['test'][id] = book
         self.ratings = ratings
         self.books = books
