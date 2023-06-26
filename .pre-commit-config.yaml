@@ -18,6 +18,8 @@ repos:
     rev: '6.0.0'
     hooks:
       - id: flake8
+        name: flake8 (python)
+        args: ["--ignore=E203"]
 
   - repo: https://github.com/psf/black
     rev: 23.3.0
