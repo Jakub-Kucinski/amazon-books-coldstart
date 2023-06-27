@@ -48,7 +48,7 @@ def filter_data(
 
 
 def split_data_by_books(ratings, books, train=0.7, validation=0.2, test=0.1):
-    if abs(1 - train + validation + test) < 1e-5:
+    if abs(1 - (train + validation + test)) > 1e-5:
         raise ValueError("Train, validation and test sizes must sum to 1")
     ratings = ratings[["Id", "User_id", "review/score"]]
     ratings = ratings.rename(
