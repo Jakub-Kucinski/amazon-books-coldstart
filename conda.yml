@@ -3,6 +3,7 @@ name: amazon-books-coldstart
 dependencies:
 - python=3.9
 - ipykernel
+- ipython
 - pip
 - pip:
   - poetry
