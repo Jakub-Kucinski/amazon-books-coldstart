@@ -38,6 +38,7 @@ def filter_data(
         on="Title",
         how="inner",
     )
+    ratings = ratings[ratings["User_id"].notna()]
 
     books = books[books["Title"].isin(ratings["Title"])]
     ratings = ratings[ratings["Title"].isin(books["Title"])]
