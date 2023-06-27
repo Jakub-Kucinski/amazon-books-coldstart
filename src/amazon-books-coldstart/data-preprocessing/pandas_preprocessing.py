@@ -64,7 +64,7 @@ def split_data_by_books(ratings, books, train=0.7, validation=0.2, test=0.1):
             "description": "description",
             "publisher": "publisher",
             "categories": "categories",
-            "image": "image",
+            "image": "image_url",
         }
     )
     books = books.sample(frac=1, random_state=42)
