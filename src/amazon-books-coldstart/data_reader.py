@@ -48,7 +48,7 @@ class Data_reader():
         i = 0
         success = 0
         with open('../../data/01_raw/Books_rating.csv', newline='') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            spamreader = csv.reader(csvfile, delimiter=',')
             for row in spamreader:
                 if i > 0:
                     try:
@@ -65,7 +65,7 @@ class Data_reader():
         i = 0
         success = 0
         with open('../../data/01_raw/books_data.csv', newline='') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            spamreader = csv.reader(csvfile, delimiter=',')
             for row in spamreader:
                 if i > 0:
                     try:
