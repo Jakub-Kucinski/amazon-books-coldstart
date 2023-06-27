@@ -153,6 +153,13 @@ def main(
     train_books.to_csv(destination_path / "train_books.csv", index=False)
     validation_books.to_csv(destination_path / "validation_books.csv", index=False)
     test_books.to_csv(destination_path / "test_books.csv", index=False)
+    if verbose:
+        print(f"train_ratings size: {len(train_ratings)}")
+        print(f"validation_ratings size: {len(validation_ratings)}")
+        print(f"test_ratings size: {len(test_ratings)}")
+        print(f"train_books size: {len(train_books)}")
+        print(f"validation_books size: {len(validation_books)}")
+        print(f"test_books size: {len(test_books)}")
 
 
 if __name__ == "__main__":
