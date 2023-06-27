@@ -7,6 +7,8 @@
 - [Pipelines](#pipelines)
   - [Data download](#data-download)
   - [Data preprocessing](#data-preprocessing)
+  - [Embeddings creation](#embeddings-creation)
+    - [Usage](#usage)
 
 # Installation
 
@@ -59,4 +61,19 @@ After this process there should be two files available:
 To filter out missing data and split books and reviews into train, validation and test sets, run
 ```shell
 python src/amazon-books-coldstart/data-preprocessing/pandas_preprocessing.py
+```
+
+## Embeddings creation
+
+```shell
+python src/amazon-books-coldstart/embeddings_creation/create_embeddings.py
+```
+
+### Usage
+
+In `src/amazon-books-coldstart/models/booksindex.py` class `BooksIndex` is implemented. It gives a posibility to search by description, for example:
+
+```python
+index = BooksIndex("../../../data/03_primary/train.index", "../../../data/03_primary/train_id_2_row.json")
+distances, neighbours = index.find_neighbours("Fantasy book description", 10)
 ```
