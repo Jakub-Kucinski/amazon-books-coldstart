@@ -49,7 +49,7 @@ poetry remove <package-name>
 ## Data download
 
 Due to considerable amount of effort necessary to implement downloading dataset from Kaggle, we decided to let the user do it manually.
-Download the dataset from [Kaggle](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews/download?datasetVersionNumber=1) and unzip it inside directory `data/01_raw/`. 
+Download the dataset from [Kaggle](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews/download?datasetVersionNumber=1) and unzip it inside directory `data/01_raw/`.
 After this process there should be two files available:
 * `data/01_raw/books_data.csv`
 * `data/01_raw/Books_rating.csv`
