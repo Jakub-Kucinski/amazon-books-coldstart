@@ -6,7 +6,7 @@
   - [Dependencies update](#dependencies-update)
 - [Pipelines](#pipelines)
   - [Data download](#data-download)
-  - [Data preprocess](#data-preprocess)
+  - [Data preprocessing](#data-preprocessing)
 
 # Installation
 
@@ -54,7 +54,9 @@ After this process there should be two files available:
 * `data/01_raw/books_data.csv`
 * `data/01_raw/Books_rating.csv`
 
-## Data preprocess
+## Data preprocessing
 
-In order to run this pipeline it is necessary to run all cells from notebook `src/amazon-books-coldstart/data_preprocessing/preprocess.ipynb`.
-The last variable `dr` is an instance of class `Data_reader` which contains the data.
+To filter out missing data and split books and reviews into train, validation and test sets, run
+```shell
+python src/amazon-books-coldstart/data-preprocessing/pandas_preprocessing.py
+```
