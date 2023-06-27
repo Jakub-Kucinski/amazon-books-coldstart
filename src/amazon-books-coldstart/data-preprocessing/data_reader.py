@@ -52,8 +52,8 @@ class Data_reader:
     def read_ratings(self):
         i = 0
         success = 0
-        with open("../../data/01_raw/Books_rating.csv", newline="") as csv_file:
-            spam_reader = csv.reader(csv_file, delimiter=",", quotechar="|")
+        with open("data/01_raw/Books_rating.csv", newline="") as csv_file:
+            spam_reader = csv.reader(csv_file, delimiter=",")
             for row in spam_reader:
                 if i > 0:
                     try:
@@ -71,8 +71,8 @@ class Data_reader:
     def read_books(self):
         i = 0
         success = 0
-        with open("../../data/01_raw/books_data.csv", newline="") as csv_file:
-            spam_reader = csv.reader(csv_file, delimiter=",", quotechar="|")
+        with open("data/01_raw/books_data.csv", newline="") as csv_file:
+            spam_reader = csv.reader(csv_file, delimiter=",")
             for row in spam_reader:
                 if i > 0:
                     try:
