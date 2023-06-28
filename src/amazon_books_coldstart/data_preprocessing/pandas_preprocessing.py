@@ -47,7 +47,9 @@ def filter_data(
     return ratings, books
 
 
-def split_data_by_books(ratings, books, train=0.7, validation=0.2, test=0.1):
+def split_data_by_books(
+    ratings, books, train=0.7, validation=0.2, test=0.1, seed=42, fraction=1.0
+):
     if abs(1 - (train + validation + test)) > 1e-5:
         raise ValueError("Train, validation and test sizes must sum to 1")
     ratings = ratings[["Id", "User_id", "review/score"]]
@@ -68,7 +70,7 @@ def split_data_by_books(ratings, books, train=0.7, validation=0.2, test=0.1):
             "image": "image_url",
         }
     )
-    books = books.sample(frac=1, random_state=42)
+    books = books.sample(frac=fraction, random_state=seed)
     train_size = int(len(books) * train)
     validation_size = int(len(books) * validation)
     train_books = books[:train_size]
@@ -101,6 +103,8 @@ def split_data_by_books(ratings, books, train=0.7, validation=0.2, test=0.1):
 @click.option("--validation", default=0.2)
 @click.option("--test", default=0.1)
 @click.option("--verbose", is_flag=True, default=False)
+@click.option("--fraction", default=1.0)
+@click.option("--seed", default=42)
 def main(
     data_path,
     destination_path,
@@ -115,6 +119,8 @@ def main(
     validation,
     test,
     verbose,
+    fraction,
+    seed,
 ):
     data_path = Path(data_path)
     if verbose:
@@ -142,7 +148,13 @@ def main(
         validation_books,
         test_books,
     ) = split_data_by_books(
-        ratings, books, train=train, validation=validation, test=test
+        ratings,
+        books,
+        train=train,
+        validation=validation,
+        test=test,
+        seed=seed,
+        fraction=fraction,
     )
     if verbose:
         print("Saving data")
