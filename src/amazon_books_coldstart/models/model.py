@@ -87,11 +87,19 @@ class AmazonBooksModelv3(torch.nn.Module):
         )
         self.linear2 = torch.nn.Linear(linear1_size, linear2_size)
 
-    def forward(self, description_embedding, authors, publishers, categories):
-        authors = self.authors_embeddings(authors)
-        publishers = self.publishers_embeddings(publishers)
-        categories = self.categories_embeddings(categories)
-        x = torch.cat((description_embedding, authors, publishers, categories), dim=1)
+    def forward(
+        self,
+        embeddings,
+        author_ids,
+        author_offsets,
+        category_ids,
+        category_offsets,
+        publisher_ids,
+    ):
+        authors = self.authors_embeddings(author_ids, author_offsets)
+        categories = self.categories_embeddings(category_ids, category_offsets)
+        publishers = self.publishers_embeddings(publisher_ids)
+        x = torch.cat((embeddings, authors, publishers, categories), dim=1)
         x = self.linear1(x)
         x = torch.nn.functional.relu(x)
         x = self.linear2(x)

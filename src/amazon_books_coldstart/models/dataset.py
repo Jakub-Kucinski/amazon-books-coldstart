@@ -73,9 +73,9 @@ class AmazonBooksDataset(Dataset):
 
 def create_collate_fn(device):
     def collate_fn(batch):
-        def collate_colmn(batch):
+        def collate_column(batch):
             embeddings = torch.stack([sample[0] for sample in batch])
-            author_ids = torch.stack([sample[1] for sample in batch])
+            author_ids = torch.cat([sample[1] for sample in batch], 0)
             author_offsets = torch.cumsum(
                 torch.tensor(
                     [0] + [len(sample[1]) for sample in batch],
@@ -84,7 +84,7 @@ def create_collate_fn(device):
                 ),
                 dim=0,
             )[:-1]
-            category_ids = torch.stack([sample[2] for sample in batch])
+            category_ids = torch.cat([sample[2] for sample in batch], 0)
             category_offsets = torch.cumsum(
                 torch.tensor(
                     [0] + [len(sample[2]) for sample in batch],
@@ -103,15 +103,15 @@ def create_collate_fn(device):
                 publisher_ids,
             )
 
-        col1 = collate_colmn([sample[0] for sample in batch])
-        col2 = collate_colmn([sample[1] for sample in batch])
+        col1 = collate_column([sample[0] for sample in batch])
+        col2 = collate_column([sample[1] for sample in batch])
         return (col1, col2)
 
     return collate_fn
 
 
 def get_train_dataloader(
-    df_books, df_ratings, embeddings, book_2_row, device, batch_size=128, shuffle=False
+    df_books, df_ratings, embeddings, book_2_row, device, batch_size=1024, shuffle=False
 ):
     dataset = AmazonBooksDataset(df_books, df_ratings, embeddings, book_2_row, device)
     collate_fn = create_collate_fn(device)
