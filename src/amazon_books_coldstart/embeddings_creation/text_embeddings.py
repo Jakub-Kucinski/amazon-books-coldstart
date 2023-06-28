@@ -2,12 +2,10 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-MODEL_NAME = "all-MiniLM-L6-v2"
-OUTPUT_SIZE = 384
-MAX_SEQ_LENGTH = 256
+from src.amazon_books_coldstart import config
 
-model = SentenceTransformer(MODEL_NAME)
-model.max_seq_length = MAX_SEQ_LENGTH
+model = SentenceTransformer(config.MODEL_NAME)
+model.max_seq_length = config.MAX_SEQ_LENGTH
 
 
 def encode(text: str) -> np.ndarray:
@@ -26,7 +24,7 @@ def load_index(index_path):
 def build_index(
     embeddings: np.ndarray, file_path: str = "", save=True
 ) -> faiss.IndexFlatL2:
-    index = faiss.IndexFlatL2(OUTPUT_SIZE)
+    index = faiss.IndexFlatL2(config.OUTPUT_SIZE)
     index.add(embeddings)
     if save:
         faiss.write_index(index, file_path)
@@ -35,11 +33,3 @@ def build_index(
 
 def find_neighbors(index: faiss.IndexFlatL2, embedding: np.ndarray, k: int):
     index.search(embedding, k)
-
-
-# policzenie zanurzeń
-# zbudowanie indeksu
-
-
-# na podstawie id książki dostać zanurzenie
-# na podstawie zanurzenia chcemy dostać ileś najbliższych idków książek

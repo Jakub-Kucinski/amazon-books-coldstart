@@ -3,12 +3,10 @@ import json
 import faiss
 from sentence_transformers import SentenceTransformer
 
-MODEL_NAME = "all-MiniLM-L6-v2"
-OUTPUT_SIZE = 384
-MAX_SEQ_LENGTH = 256
+from src.amazon_books_coldstart import config
 
-model = SentenceTransformer(MODEL_NAME)
-model.max_seq_length = MAX_SEQ_LENGTH
+model = SentenceTransformer(config.MODEL_NAME)
+model.max_seq_length = config.MAX_SEQ_LENGTH
 
 
 class BooksIndex:
