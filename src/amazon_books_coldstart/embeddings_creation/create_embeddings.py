@@ -8,7 +8,7 @@ from text_embeddings import build_index, encode_list
 FILE_PREFIXES = ["train", "validation", "test"]
 
 
-def create_embdeddings(file_prefix, save=True):
+def create_embeddings(file_prefix, save=True):
     df = pd.read_csv(f"data/02_intermediate/{file_prefix}_books.csv")
     embeddings = encode_list(df["description"].tolist())
     if save:
@@ -31,5 +31,5 @@ def save_json(obj, file_path):
 
 
 for file_prefix in FILE_PREFIXES:
-    embeddings = create_embdeddings(file_prefix)
+    embeddings = create_embeddings(file_prefix)
     index = build_index(embeddings, f"data/03_primary/{file_prefix}.index")

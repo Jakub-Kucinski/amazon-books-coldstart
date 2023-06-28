@@ -33,7 +33,7 @@ def build_index(
     return index
 
 
-def find_neighbours(index: faiss.IndexFlatL2, embedding: np.ndarray, k: int):
+def find_neighbors(index: faiss.IndexFlatL2, embedding: np.ndarray, k: int):
     index.search(embedding, k)
 
 

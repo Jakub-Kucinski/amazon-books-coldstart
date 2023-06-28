@@ -47,6 +47,10 @@ poetry remove <package-name>
 ```
 
 # Pipelines
+First please install the repo by running:
+```shell
+python setup.py develop
+```
 
 ## Data download
 
@@ -60,20 +64,20 @@ After this process there should be two files available:
 
 To filter out missing data and split books and reviews into train, validation and test sets, run
 ```shell
-python src/amazon-books-coldstart/data-preprocessing/pandas_preprocessing.py
+python src/amazon_books_coldstart/data_preprocessing/pandas_preprocessing.py
 ```
 
 ## Embeddings creation
 
 ```shell
-python src/amazon-books-coldstart/embeddings_creation/create_embeddings.py
+python src/amazon_books_coldstart/embeddings_creation/create_embeddings.py
 ```
 
 ### Usage
 
-In `src/amazon-books-coldstart/models/booksindex.py` class `BooksIndex` is implemented. It gives a posibility to search by description, for example:
+In `src/amazon_books_coldstart/models/booksindex.py` class `BooksIndex` is implemented. It gives a possibility to search by description, for example:
 
 ```python
 index = BooksIndex("../../../data/03_primary/train.index", "../../../data/03_primary/train_id_2_row.json")
-distances, neighbours = index.find_neighbours("Fantasy book description", 10)
+distances, neighbors = index.find_neighbors("Fantasy book description", 10)
 ```

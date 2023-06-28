@@ -17,7 +17,7 @@ class BooksIndex:
         self.book_2_row = json.load(open(book_ids_path, mode="r"))
         self.row_2_book = {row: book for book, row in self.book_2_row.items()}
 
-    def find_neighbours(self, description, k):
+    def find_neighbors(self, description, k):
         embedding = model.encode(description)
         distances, rows = self.index.search(embedding.reshape((1, -1)), k)
         return [distance for distance in distances.reshape((-1))], [
