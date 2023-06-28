@@ -3,7 +3,11 @@ import json
 import faiss
 import numpy as np
 import pandas as pd
-from text_embeddings import build_index, encode_list
+
+from src.amazon_books_coldstart.embeddings_creation.text_embeddings import (
+    build_index,
+    encode_list,
+)
 
 FILE_PREFIXES = ["train", "validation", "test"]
 
