@@ -80,6 +80,6 @@ In `src/amazon_books_coldstart/models/booksindex.py` class `BooksIndex` is imple
 ```python
 from src.amazon_books_coldstart.models.booksindex import BooksIndex
 
-index = BooksIndex("../../../data/03_primary/train.index", "../../../data/03_primary/train_id_2_row.json")
+index = BooksIndex("data/03_primary/train.index", "data/03_primary/train_id_2_row.json")
 distances, neighbors = index.find_neighbors("Fantasy book description", 10)
 ```
