@@ -1,3 +1,5 @@
+import json
+
 import torch
 from torch.utils.data import DataLoader, Dataset
 
@@ -39,6 +41,16 @@ class AmazonBooksDataset(Dataset):
 
         self.embeddings = embeddings
         self.book_2_row = book_2_row
+
+    def save_ids(self):
+        with open("data/04_feature/author_ids.json", mode="w") as file:
+            json.dump(self.author_2_idx, file)
+
+        with open("data/04_feature/category_ids.json", mode="w") as file:
+            json.dump(self.category_2_idx, file)
+
+        with open("data/04_feature/publisher_ids.json", mode="w") as file:
+            json.dump(self.publisher_2_idx, file)
 
     def __len__(self):
         return self.df_pairs.shape[0]
@@ -114,6 +126,7 @@ def get_train_dataloader(
     df_books, df_ratings, embeddings, book_2_row, device, batch_size=1024, shuffle=False
 ):
     dataset = AmazonBooksDataset(df_books, df_ratings, embeddings, book_2_row, device)
+    dataset.save_ids()
     collate_fn = create_collate_fn(device)
     return DataLoader(
         dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn

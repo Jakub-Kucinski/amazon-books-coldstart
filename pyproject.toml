@@ -7,18 +7,19 @@ readme = "README.md"
 # packages = [{include = "amazon_books_coldstart"}]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.12"
 pre-commit = "^3.3.3"
 black = "^23.3.0"
 flake8 = "^6.0.0"
 isort = "^5.12.0"
-numpy = "^1.25.0"
+numpy = ">=1.23.2"
 pandas = "^2.0.2"
 click = "^8.1.3"
 torch = "^2.0.1"
 sentence-transformers = "^2.2.2"
 faiss-cpu = "^1.7.4"
 pytorch-metric-learning = "^2.2.0"
+ydata-profiling = "^4.3.1"
 
 
 [build-system]
