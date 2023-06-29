@@ -91,7 +91,7 @@ class Simple_approach:
         result.reverse()
         return list(np.array(result)[: min(len(result), number_of_users), 1])
 
-    def recommend_users(self, authors, publisher, categories, number_of_users=20):
+    def recommend_users(self, authors, publisher, categories, description, number_of_users=20):
         scores, books = self.get_similar_books(
             authors, publisher, categories, number_of_users * 20
         )

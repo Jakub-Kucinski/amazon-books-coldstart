@@ -1,12 +1,9 @@
 import pandas as pd
 from tqdm import tqdm
 
-
 class Test:
     def __init__(self, dataset_type):
-        self.books = pd.read_csv("data/02_intermediate/" + dataset_type + "_books.csv")[
-            ["book_id", "authors", "publisher", "categories"]
-        ]
+        self.books = pd.read_csv("data/02_intermediate/" + dataset_type + "_books.csv")
         self.ratings = pd.read_csv(
             "data/02_intermediate/" + dataset_type + "_ratings.csv"
         )
@@ -43,6 +40,7 @@ class Test:
                 book["authors"],
                 book["publisher"],
                 book["categories"],
+                book["description"],
                 get_number_of_users(book_id),
             )
             number_of_reviews = self.number_of_reviews[book_id]
@@ -98,3 +96,10 @@ class Test:
                 return 20
 
         return self.test_books_helper(get_answer, get_number_of_users)
+
+def test_model(dataset_type, model):
+    print("Creating testing class")
+    test = Test(dataset_type)
+    print("Testing model")
+    test.test_books(model.recommend_users)
+    test.test_books_2(model.recommend_users)
