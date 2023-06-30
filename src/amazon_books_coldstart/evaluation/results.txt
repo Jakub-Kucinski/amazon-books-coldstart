@@ -1,4 +1,4 @@
-24801it [13:12, 31.29it/s]
+Simple approach:
 all books
 number of books = 24801
 average precision = 0.027327698528331324
@@ -11,7 +11,6 @@ book on and above threshold
 number of books = 2921
 average precision = 0.13156881205066903
 average recall = 0.049428644132582904
-24801it [11:42, 35.30it/s]
 all books
 number of books = 24801
 average precision = 0.05456273592681007
@@ -24,3 +23,4 @@ book on and above threshold
 number of books = 2921
 average precision = 0.08050417483094051
 average recall = 0.07872011664402218
+===================================================================
