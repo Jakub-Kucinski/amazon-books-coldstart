@@ -26,11 +26,11 @@ Simple_approach False f2 f3             &
 Simple_approach False f3 f3             &
 Simple_approach False f4 f3             &
 User_embeddings                         &
-User_embeddings 1                       &
-User_embeddings 2                       &
-User_embeddings 3                       &
-User_embeddings 4                       &
-User_embeddings 5                       &
-User_embeddings 6                       &
-User_embeddings 7                       &
-User_embeddings 8                       &
+User_embeddings2 1                       &
+User_embeddings2 2                       &
+User_embeddings2 3                       &
+User_embeddings2 4                       &
+User_embeddings2 5                       &
+User_embeddings2 6                       &
+User_embeddings2 7                       &
+User_embeddings2 8                       &
