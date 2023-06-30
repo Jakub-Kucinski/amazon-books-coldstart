@@ -1,5 +1,5 @@
-from ydata_profiling import ProfileReport
 import pandas as pd
+from ydata_profiling import ProfileReport
 
 books = pd.read_csv("data/02_intermediate/train_books.csv")
 ratings = pd.read_csv("data/02_intermediate/train_ratings.csv")
