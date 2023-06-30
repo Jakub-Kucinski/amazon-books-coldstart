@@ -108,21 +108,21 @@ def compute_all_embeddings(model, device="cuda"):
         model_output = []
         with torch.no_grad():
             for i, batch in tqdm(enumerate(dataloader), total=len(dataloader)):
-                embeddings = model(batch)
+                embeddings = model(*batch)
                 model_output.append(embeddings.detach().cpu().numpy())
 
         return np.concatenate(model_output, axis=0)
 
-    author_2_id = json.load(open("data/04_features/author_ids.json", mode="r"))
-    category_2_id = json.load(open("data/04_features/category_ids.json", mode="r"))
-    publisher_2_id = json.load(open("data/04_features/publisher_ids.json", mode="r"))
+    author_2_id = json.load(open("data/04_feature/author_ids.json", mode="r"))
+    category_2_id = json.load(open("data/04_feature/category_ids.json", mode="r"))
+    publisher_2_id = json.load(open("data/04_feature/publisher_ids.json", mode="r"))
 
     for prefix in ["train", "validation", "test"]:
-        df_books = pd.read_csv(f"data/04_features/{prefix}_books.csv")
+        df_books = pd.read_csv(f"data/02_intermediate/{prefix}_books.csv")
         book_2_row = json.load(
-            open(f"data/04_features/{prefix}_book_2_row.json", mode="r")
+            open(f"data/03_primary/{prefix}_id_2_row.json", mode="r")
         )
-        embeddings = np.load(f"data/04_features/{prefix}_embeddings.npy")
+        embeddings = np.load(f"data/03_primary/{prefix}_embeddings.npy")
         dataset = BooksDataset(
             df_books,
             embeddings,
@@ -140,3 +140,12 @@ def compute_all_embeddings(model, device="cuda"):
         )
         model_output = compute_embeddings(dataloader)
         np.save(f"data/07_model_output/{prefix}_model_output.npy", model_output)
+        json.dump(
+            {book_id: row for row, book_id in enumerate(df_books["book_id"].values)},
+            open(f"data/07_model_output/{prefix}_id_2_row.json", mode="w"),
+        )
+
+
+model = torch.load("data/06_models/1_1000.pth")
+model = model.to("cuda")
+compute_all_embeddings(model, device="cuda")
