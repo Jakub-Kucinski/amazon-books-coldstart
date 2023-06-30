@@ -53,7 +53,8 @@ class User_embeddings2:
     def recommend_users(self, description_embedding, number_of_users=20):
         res = set()
         mult = 0
-        while 1:
+        ok = False
+        while (not ok):
             mult += 1
             res.clear()
             distances, rows = self.index.search(description_embedding.reshape((1, -1)), mult * number_of_users)
@@ -66,5 +67,7 @@ class User_embeddings2:
             for [_, row_id] in pairs:
                 res.add(self.row_id_to_user_id[row_id])
                 if len(res) == number_of_users:
+                    ok = True
                     break
+
         return list(res)
