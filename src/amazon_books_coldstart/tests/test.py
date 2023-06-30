@@ -1,8 +1,14 @@
 import pandas as pd
 from tqdm import tqdm
+import numpy as np
+import json
 
 class Test:
-    def __init__(self, dataset_type):
+    def __init__(self, dataset_type, using_embeddings):
+        self.using_embeddings = using_embeddings
+        self.embeddings = np.load("data/03_primary/" + dataset_type + "_embeddings.npy")
+        self.book_id_to_row = json.load(open("data/03_primary/" + dataset_type + "_id_2_row.json", mode="r"))
+
         self.books = pd.read_csv("data/02_intermediate/" + dataset_type + "_books.csv")
         self.ratings = pd.read_csv(
             "data/02_intermediate/" + dataset_type + "_ratings.csv"
@@ -24,6 +30,9 @@ class Test:
                 self.number_of_users_that_reviewed[book_id] += 1
             self.reviews[tuple] += 1
 
+    def get_book_embedding(self, book_id):
+        return self.embeddings[self.book_id_to_row[book_id]]
+
     def test_books_helper(self, get_answer, get_number_of_users):
         precision = 0
         recall = 0
@@ -36,13 +45,17 @@ class Test:
         threshold = 20
         for index, book in tqdm(self.books.iterrows()):
             book_id = book["book_id"]
-            recommended_users = get_answer(
-                book["authors"],
-                book["publisher"],
-                book["categories"],
-                book["description"],
-                get_number_of_users(book_id),
-            )
+            recommended_users = []
+            if self.using_embeddings:
+                recommended_users = get_answer(self.get_book_embedding(book_id), get_number_of_users(book_id))
+            else:
+                recommended_users = get_answer(
+                    book["authors"],
+                    book["publisher"],
+                    book["categories"],
+                    book["description"],
+                    get_number_of_users(book_id),
+                )
             number_of_reviews = self.number_of_reviews[book_id]
             correct_guesses = 0
             for user_id in recommended_users:
@@ -97,9 +110,9 @@ class Test:
 
         return self.test_books_helper(get_answer, get_number_of_users)
 
-def test_model(dataset_type, model):
+def test_model(dataset_type, model, using_embeddings=False):
     print("Creating testing class")
-    test = Test(dataset_type)
+    test = Test(dataset_type, using_embeddings)
     print("Testing model")
     test.test_books(model.recommend_users)
     test.test_books_2(model.recommend_users)
