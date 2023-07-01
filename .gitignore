@@ -19,6 +19,7 @@ logs/**
 !data/**/
 !logs/**/
 !data/08_reporting/project_report.md
+!data/08_reporting/imgs/*
 
 # also keep all .gitkeep files
 !.gitkeep
