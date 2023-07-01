@@ -4,10 +4,16 @@ import numpy as np
 import json
 
 class Test:
-    def __init__(self, dataset_type, using_embeddings):
-        self.using_embeddings = using_embeddings
-        self.embeddings = np.load("data/03_primary/" + dataset_type + "_embeddings.npy")
-        self.book_id_to_row = json.load(open("data/03_primary/" + dataset_type + "_id_2_row.json", mode="r"))
+    # mode: 
+    # "description embedding"
+    # "book embedding"
+    # "params"
+    def __init__(self, dataset_type, mode):
+        self.mode = mode
+        self.description_embeddings = np.load("data/03_primary/" + dataset_type + "_embeddings.npy")
+        self.book_id_to_row_description = json.load(open("data/03_primary/" + dataset_type + "_id_2_row.json", mode="r"))
+        self.book_embeddings = np.load("data/04_feature/" + dataset_type + "_model_output.npy")
+        self.book_id_to_row = json.load(open("data/04_feature/" + dataset_type + "_id_2_row.json", mode="r"))
 
         self.books = pd.read_csv("data/02_intermediate/" + dataset_type + "_books.csv")
         self.ratings = pd.read_csv(
@@ -30,8 +36,11 @@ class Test:
                 self.number_of_users_that_reviewed[book_id] += 1
             self.reviews[tuple] += 1
 
+    def get_description_embedding(self, book_id):
+        return self.description_embeddings[self.book_id_to_row_description[book_id]]
+
     def get_book_embedding(self, book_id):
-        return self.embeddings[self.book_id_to_row[book_id]]
+        return self.book_embeddings[self.book_id_to_row[book_id]]
 
     def test_books_helper(self, get_answer, get_number_of_users):
         precision = 0
@@ -46,9 +55,11 @@ class Test:
         for index, book in tqdm(self.books.iterrows()):
             book_id = book["book_id"]
             recommended_users = []
-            if self.using_embeddings:
+            if self.mode == "description embedding":
+                recommended_users = get_answer(self.get_description_embedding(book_id), get_number_of_users(book_id))
+            if self.mode == "book embedding":
                 recommended_users = get_answer(self.get_book_embedding(book_id), get_number_of_users(book_id))
-            else:
+            if self.mode == "params":
                 recommended_users = get_answer(
                     book["authors"],
                     book["publisher"],
@@ -110,9 +121,9 @@ class Test:
 
         return self.test_books_helper(get_answer, get_number_of_users)
 
-def test_model(dataset_type, model, using_embeddings=False):
+def test_model(dataset_type, model, mode="params"):
     print("Creating testing class")
-    test = Test(dataset_type, using_embeddings)
+    test = Test(dataset_type, mode)
     print("Testing model")
     test.test_books(model.recommend_users)
     test.test_books_2(model.recommend_users)
