@@ -1,19 +1,29 @@
-import pandas as pd
-from tqdm import tqdm
-import numpy as np
 import json
 
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
+
 class Test:
-    # mode: 
+    # mode:
     # "description embedding"
     # "book embedding"
     # "params"
     def __init__(self, dataset_type, mode):
         self.mode = mode
-        self.description_embeddings = np.load("data/03_primary/" + dataset_type + "_embeddings.npy")
-        self.book_id_to_row_description = json.load(open("data/03_primary/" + dataset_type + "_id_2_row.json", mode="r"))
-        self.book_embeddings = np.load("data/04_feature/" + dataset_type + "_model_output.npy")
-        self.book_id_to_row = json.load(open("data/04_feature/" + dataset_type + "_id_2_row.json", mode="r"))
+        self.description_embeddings = np.load(
+            "data/03_primary/" + dataset_type + "_embeddings.npy"
+        )
+        self.book_id_to_row_description = json.load(
+            open("data/03_primary/" + dataset_type + "_id_2_row.json", mode="r")
+        )
+        self.book_embeddings = np.load(
+            "data/07_model_output/" + dataset_type + "_model_output.npy"
+        )
+        self.book_id_to_row = json.load(
+            open("data/07_model_output/" + dataset_type + "_id_2_row.json", mode="r")
+        )
 
         self.books = pd.read_csv("data/02_intermediate/" + dataset_type + "_books.csv")
         self.ratings = pd.read_csv(
@@ -52,13 +62,18 @@ class Test:
         recall_below_threshold = 0
         recall_above_threshold = 0
         threshold = 20
-        for index, book in tqdm(self.books.iterrows()):
+        for index, book in tqdm(self.books.iterrows(), total=self.books.shape[0]):
             book_id = book["book_id"]
             recommended_users = []
             if self.mode == "description embedding":
-                recommended_users = get_answer(self.get_description_embedding(book_id), get_number_of_users(book_id))
+                recommended_users = get_answer(
+                    self.get_description_embedding(book_id),
+                    get_number_of_users(book_id),
+                )
             if self.mode == "book embedding":
-                recommended_users = get_answer(self.get_book_embedding(book_id), get_number_of_users(book_id))
+                recommended_users = get_answer(
+                    self.get_book_embedding(book_id), get_number_of_users(book_id)
+                )
             if self.mode == "params":
                 recommended_users = get_answer(
                     book["authors"],
@@ -120,6 +135,7 @@ class Test:
                 return 20
 
         return self.test_books_helper(get_answer, get_number_of_users)
+
 
 def test_model(dataset_type, model, mode="params"):
     print("Creating testing class")

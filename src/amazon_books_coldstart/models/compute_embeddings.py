@@ -146,6 +146,6 @@ def compute_all_embeddings(model, device="cuda"):
         )
 
 
-model = torch.load("data/06_models/1_1000.pth")
+model = torch.load("data/06_models/1_3000.pth")
 model = model.to("cuda")
 compute_all_embeddings(model, device="cuda")
