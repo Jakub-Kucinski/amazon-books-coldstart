@@ -18,6 +18,7 @@ logs/**
 # except their sub-folders
 !data/**/
 !logs/**/
+!data/08_reporting/project_report.md
 
 # also keep all .gitkeep files
 !.gitkeep
