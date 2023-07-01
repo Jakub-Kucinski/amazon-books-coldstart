@@ -28,7 +28,6 @@ class User_embeddings:
         embeddings = []
         self.row_id_to_user_id = []
         for key in self.user_embeddings.keys():
-            assert len(self.user_embeddings[key] / self.user_sum[key]) == 384, "BAD :( " + str(len(self.user_embeddings[key] / self.user_sum[key])) + " " + str(len(self.user_embeddings[key])) 
             embeddings.append(self.user_embeddings[key] / self.user_sum[key])
             self.row_id_to_user_id.append(key)
         self.index = faiss.IndexFlatL2(OUTPUT_SIZE)
