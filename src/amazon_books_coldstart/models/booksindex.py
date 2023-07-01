@@ -58,3 +58,33 @@ class Index_cosine_similarity:
         distances, rows = self.index.search(self.normalize(embedding.reshape((1, -1))), k)
         return [distance for distance in distances.reshape((-1))], [self.row_2_book_id[row] for row in rows.reshape((-1))]
     
+
+class Index_from_list:
+    def __init__(self, embeddings, row_2_book_id):        
+        self.row_2_book_id = row_2_book_id
+        
+        self.index = faiss.IndexFlatL2(len(embeddings[0]))
+        embeddings = np.array(embeddings)
+        self.index.add(embeddings)
+    
+    def search(self, embedding, k):
+        distances, rows = self.index.search(embedding.reshape((1, -1)), k)
+        return [distance for distance in distances.reshape((-1))], [self.row_2_book_id[row] for row in rows.reshape((-1))]
+    
+class Index_cosine_similarity_from_list:
+
+    def normalize(self, embedding):
+        s = sum(embedding ** 2)
+        return embedding / np.sqrt(s)
+    
+    def __init__(self, embeddings, row_2_book_id):
+        self.row_2_book_id = row_2_book_id
+
+        self.index = faiss.IndexFlatIP(len(embeddings[0]))
+        embeddings = np.array(embeddings)
+        self.index.add(embeddings)
+    
+    def search(self, embedding, k):
+        distances, rows = self.index.search(self.normalize(embedding.reshape((1, -1))), k)
+        return [distance for distance in distances.reshape((-1))], [self.row_2_book_id[row] for row in rows.reshape((-1))]
+    
