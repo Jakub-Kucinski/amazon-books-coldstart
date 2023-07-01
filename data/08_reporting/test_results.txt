@@ -25,7 +25,7 @@ Simple_approach False f1 f3             &
 Simple_approach False f2 f3             &
 Simple_approach False f3 f3             &
 Simple_approach False f4 f3             &
-User_embeddings                         &
+User_embeddings                         & 0.0396314664731245 & 0.08114573723854974 & 0.017778793418647815 & 0.08058108172126506 & 0.20332078055460517 & 0.06871961536232535 & 0.0679347253411506 & 0.05593944095487301 & 0.0554528359502896 & 0.16445060339213177 & 0.16143138397588072
 User_embeddings2 1                       &
 User_embeddings2 2                       &
 User_embeddings2 3                       &
@@ -34,3 +34,11 @@ User_embeddings2 5                       &
 User_embeddings2 6                       &
 User_embeddings2 7                       &
 User_embeddings2 8                       &
+User_embeddings3 1                       &
+User_embeddings3 2                       &
+User_embeddings3 3                       &
+User_embeddings3 4                       &
+User_embeddings3 5                       &
+User_embeddings3 6                       &
+User_embeddings3 7                       &
+User_embeddings3 8                       &
