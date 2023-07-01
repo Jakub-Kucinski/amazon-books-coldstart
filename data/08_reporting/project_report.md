@@ -23,12 +23,12 @@
       - [User\_embeddings2](#user_embeddings2)
       - [User\_embeddings3](#user_embeddings3)
     - [FAISS](#faiss)
-    - [Model embeddings and training KAROL](#model-embeddings-and-training-karol)
+    - [Model embeddings and training](#model-embeddings-and-training)
   - [Results](#results)
     - [Detailed results RZEPA](#detailed-results-rzepa)
     - [Summary RZEPA](#summary-rzepa)
     - [Conclusions RZEPA](#conclusions-rzepa)
-    - [Perspectives KAROL](#perspectives-karol)
+    - [Perspectives](#perspectives)
 
 ## Problem description
 
@@ -133,7 +133,14 @@ This model is similar to the User_embeddings2, but it uses book embeddings inste
 
 ### FAISS
 
-### Model embeddings and training KAROL
+Embeddings calculation requires also a way to find nearest neighbors (Euclidean distance or cosine similarity). We used FAISS library for this purpose. It is a library for efficient similarity search and clustering of dense vectors. It is developed by Facebook AI Research. [GitHub repository](https://github.com/facebookresearch/faiss).
+
+### Model embeddings and training
+
+Creating book embedding consisted of a few steps:
+* We used [SentenceTransformer](https://www.sbert.net/index.html) library to embed book description. It provides the user with set of pretrained models that can be used to embed sentences. We used `all-MiniLM-L6-v2` model due to its speed and accuracy.
+* The other embedding needed was author, category and publisher. We opted for torch trainable embeddings. We used `nn.Embedding` for publisher and `nn.EmbeddingBag` for author and category. Then we concatenated all embeddings and passed them through a few linear layers to get the final embedding.
+* The last step was to design loss function. For this purpose we used [pytorch-metric-learing](https://kevinmusgrave.github.io/pytorch-metric-learning/). We wanted two books to be close (cosine similarity) if they were read by the same user.
 
 ## Results
 
@@ -143,4 +150,6 @@ This model is similar to the User_embeddings2, but it uses book embeddings inste
 
 ### Conclusions RZEPA
 
-### Perspectives KAROL
+### Perspectives
+
+Due to bad speed performance of model training we were not able to train it properly. We believe that we haven't explored this idea enough and it would be worth to try to train it properly. Another idea would be to create and end-to-end model which would take a book description and return probability over users. Performance of model using only books' descriptions is promising.
