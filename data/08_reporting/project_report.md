@@ -219,7 +219,7 @@ Best models from each model type
 ||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
 model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
 Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
-User_embeddings | 4 | 8 | 2 | 8 | 20 | 7 | 7 | 6 | 6 | 16 | 16
+User_embeddings | 4 | 8 | 2 | 8 | 20 | 7 | 7 | 6 | 6 | 6 | 16 | 16
 User_embeddings2 4 | 5 | 10 | 2 | 10 | 23 | 10 | 9 | 8 | 7 | 7 | 20 | 19
 User_embeddings3 4 False | 4 | 8 | 2 | 8 | 20 | 8 | 7 | 7 | 6 | 6 | 17 | 16
 Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 23 | 10 | 10 | 10 | 8 | 8 | 21 | 21
@@ -227,7 +227,19 @@ Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 23 | 10 | 10 | 10 | 8 | 
 We see that many approaches led to a very similar results. This suggest that creating significantly better solution is harder and requires a new trick or technique. Our models reached 23% percents precision on books with at least 20 reviews which sounds like a very good result.
 
 
-TODO RZEPA: final results on "test" and a few conclusions of the results. Add something to summary or conclusions if there is something unusual.
+Results on test set.
+
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+Simple approach True f3 f1 | 5 | 12 | 3 | 12 | 24 | 10 | 10 | 10 | 9 | 9 | 22 | 22
+User embeddings | 4 | 8 | 2 | 8 | 20 | 8 | 7 | 7 | 6 | 6 | 16 | 16
+User_embedding2 4 | 5 | 10 | 2 | 10 | 23 | 9 | 9 | 8 | 7 | 7 | 20 | 19
+User_embedding3 4 False | 4 | 8 | 2 | 8 | 20 | 8 | 7 | 7 | 6 | 6 | 17 | 16
+Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 24 | 10 | 10 | 10 | 9 | 9 | 22 | 21
+
+We see that there is almost no difference between results on validation and test set. Both of them were generated in a similar manner and are big. Thus, this is not a surprise.
 
 ### Summary 
 
@@ -243,6 +255,8 @@ Training models was very hard, since the dataset was big and the models were lea
 ### Conclusions 
 
 Embeddings seem to not be trained well enough, since they work better on L2 metric instead of cosine similarity. This is weird and unexpected, since they were trained on consine similarity loss. Most of the best performing models had pretty similar results. This suggests that there is some obstacle none of them was able to pass. The models final performance was pretty nice. For a given book with at least 20 reviews it suggested almost 5 users that would read it. This means that in real life if we are given a book that has potential we would likely promote it.      
+
+Embeddings of description performed well and adding rest of book data to the embedding training process did not improve them. This is quite intuitive, since description of the book is long in comparison to other book data like author or publisher.
 
 Training models on huge dataset is not an easy thing. The computations are slow, models are learning very slowly, analysis of the dataset is hard, since it is not possible to "go through" the dataset. Also, recommening books sounds like a hard task for a few reasons:
 - the fact if people like the book or not depends also on factors other than the book itself (our humor etc.)
