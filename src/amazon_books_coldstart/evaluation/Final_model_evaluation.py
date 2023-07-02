@@ -38,12 +38,18 @@ class Score_mapping:
 distance_mapping = Distance_mapping()
 score_mapping = Score_mapping()
 
-test_model("test", Simple_approach(True, distance_mapping.f3, score_mapping.f1))
+print("Simple approach")
+#test_model("test", Simple_approach(True, distance_mapping.f3, score_mapping.f1))
 
-test_model("test", User_embeddings(), "description embedding")
+print("User embeddings")
+#test_model("test", User_embeddings(), "description embedding")
 
-test_model("test", User_embeddings2(4), "description embedding")
+print("User_embedding2")
+#test_model("test", User_embeddings2(4), "description embedding")
 
+print("User_embedding3")
 test_model("test", User_embeddings3(4, False), "book embedding")
 
-test_model("test", Book_embedding_approach(distance_mapping.f3, score_mapping.f1, False), "book embedding")
+print("Book_embedding_approach")
+#test_model("test", Book_embedding_approach(distance_mapping.f3, score_mapping.f1, False), "book embedding")
+
