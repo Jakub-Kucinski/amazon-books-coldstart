@@ -140,7 +140,14 @@ Embeddings calculation requires also a way to find nearest neighbors (Euclidean 
 Creating book embedding consisted of a few steps:
 * We used [SentenceTransformer](https://www.sbert.net/index.html) library to embed book description. It provides the user with set of pretrained models that can be used to embed sentences. We used `all-MiniLM-L6-v2` model due to its speed and accuracy.
 * The other embedding needed was author, category and publisher. We opted for torch trainable embeddings. We used `nn.Embedding` for publisher and `nn.EmbeddingBag` for author and category. Then we concatenated all embeddings and passed them through a few linear layers to get the final embedding.
-* The last step was to design loss function. For this purpose we used [pytorch-metric-learing](https://kevinmusgrave.github.io/pytorch-metric-learning/). We wanted two books to be close (cosine similarity) if they were read by the same user.
+* The last step was to design loss function. For this purpose we used [pytorch-metric-learing](https://kevinmusgrave.github.io/pytorch-metric-learning/). We wanted two books to be close (cosine similarity) if they were read by the same user. We chose [`SupConLoss`](https://kevinmusgrave.github.io/pytorch-metric-learning/losses/#supconloss) and wrapped it in [`SelfSupervisedLoss`](https://kevinmusgrave.github.io/pytorch-metric-learning/losses/#selfsupervisedloss). This way we were able to train model in batches where each batch contained a sef of pairs of books. We used `Adam` optimizer with learning rate `0.0001`.
+$$\mathcal{L}_{out}^{sup} = \sum_{i \in I} \mathcal{L}_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$
+where:
+* $I$ is a set of all books from batch
+* $\tau$ is a temperature parameter
+* $\cdot$ is a dot product
+* $P(i)$ is a set of positive examples for $i$ (in our case it is other book from pair)
+* $A(i)$ is a set of negative examples for $i$ (in our case it is all other books)
 
 ## Results
 
