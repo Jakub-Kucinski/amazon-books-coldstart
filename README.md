@@ -1,5 +1,6 @@
 # Table of contents
 - [Table of contents](#table-of-contents)
+- [Project report](#project-report)
 - [Installation](#installation)
   - [Environment setup](#environment-setup)
   - [Pre-commit installation](#pre-commit-installation)
@@ -9,7 +10,11 @@
   - [Data preprocessing](#data-preprocessing)
   - [Embeddings creation](#embeddings-creation)
     - [Usage](#usage)
-- [Project report](#project-report)
+
+
+# Project report
+
+Comprehensive project report covering problem description, methodology, results and conclusions can be found in [data/08_reporting/project_report.md](data/08_reporting/project_report.md) file.
 
 # Installation
 
@@ -84,7 +89,3 @@ from src.amazon_books_coldstart.models.booksindex import BooksIndex
 index = BooksIndex("data/03_primary/train.index", "data/03_primary/train_id_2_row.json")
 distances, neighbors = index.find_neighbors("Fantasy book description", 10)
 ```
-
-# Project report
-
-Comprehensive project report covering problem description, methodology, results and conclusions can be found in [data/08_reporting/project_report.md](data/08_reporting/project_report.md) file.
