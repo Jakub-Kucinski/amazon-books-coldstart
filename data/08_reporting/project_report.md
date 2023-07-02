@@ -47,7 +47,7 @@ Links to report notebooks, dataset description
 
 We decided to tackle the 'cold start' problem. Read more on [Wikipedia](https://en.wikipedia.org/wiki/Cold_start_(recommender_systems)#New_item). Given a new book, we want to recommend it to users that will actually read it. It's not a trivial problem because we can use only book's metadata.
 
-### Metrics 
+### Metrics
 Problem task: given book predict users that will read it.
 
 We use a few metrics build from a few blocks described below. First has 2 possibilities, second 3 possibilities and third 2 possibilities what gives 12 values in total. We report the average value over the selected dataset for those metrics.
@@ -70,14 +70,14 @@ We query for $20$ and $r$ users. $20$ users seems to be a good benchmark for a n
 
 ## Methods (idea)
 
-#### First model idea 
+#### First model idea
 For a query:
 - find books closets to ours (using similarity measure between books)
 - for those books rate users that rated books that are similar to the one from the query
 
 Our baseline algorithm used information about book's authors, categories and publisher to define similarity of books. It is Simple_approach(True, f1, f1). To define similarity measure we used information about book's authors, categories, publisher, description embedding and book embedding.
 
-#### Second model idea 
+#### Second model idea
 Embed users into a space based on embeddings of book they reviewed. Then, for a query search for users closest to the book embedding. To embed we used description embedding and book embedding.
 
 ### Book embeddings model
@@ -87,9 +87,9 @@ This approach tries to utilize deep learning. The main idea is to create an embe
 
 ## Description of the implementation (details)
 
-### First model idea 
+### First model idea
 
-#### Simple_approach 
+#### Simple_approach
 Books similarity is counted as follows:
 (10 x number_of_same_authors + 1 x (same_publisher) + 5 x (same_category)) * (add_fixed_part == True) + distance_mapping(distance) x (is_in_clostest_books).
 We used the following distance mapping functions:
@@ -107,13 +107,13 @@ We used the following scoreMapping functions:
 
 For a given query we query for 20 * number_of_users_to_return books and then we find best number_of_users_to_return users based on those books.
 
-#### Book_embedding_approach 
+#### Book_embedding_approach
 
 This solution differs from Simple_approach in computing books similarity. It uses books embedding to compute the similarity and then maps it using funcitons f1-f4 described above and identity function. The similarity can be computed using cosine similarity and L2 norm (this can be specified when creating the model).
 
 The second part of this algorithm is the same as in Simple_approach.
 
-### Second model idea 
+### Second model idea
 
 #### User_embeddings
 
@@ -140,17 +140,28 @@ Embeddings calculation requires also a way to find nearest neighbors (Euclidean 
 Creating book embedding consisted of a few steps:
 * We used [SentenceTransformer](https://www.sbert.net/index.html) library to embed book description. It provides the user with set of pretrained models that can be used to embed sentences. We used `all-MiniLM-L6-v2` model due to its speed and accuracy.
 * The other embedding needed was author, category and publisher. We opted for torch trainable embeddings. We used `nn.Embedding` for publisher and `nn.EmbeddingBag` for author and category. Then we concatenated all embeddings and passed them through a few linear layers to get the final embedding.
-* The last step was to design loss function. For this purpose we used [pytorch-metric-learing](https://kevinmusgrave.github.io/pytorch-metric-learning/). We wanted two books to be close (cosine similarity) if they were read by the same user.
+* The last step was to design loss function. For this purpose we used [pytorch-metric-learing](https://kevinmusgrave.github.io/pytorch-metric-learning/). We wanted two books to be close (cosine similarity) if they were read by the same user. We chose [`SupConLoss`](https://kevinmusgrave.github.io/pytorch-metric-learning/losses/#supconloss) and wrapped it in [`SelfSupervisedLoss`](https://kevinmusgrave.github.io/pytorch-metric-learning/losses/#selfsupervisedloss). This way we were able to train model in batches where each batch contained a sef of pairs of books. We used `Adam` optimizer with learning rate `0.0001`.
+
+<!-- $$\mathcal{L}_{out}^{sup} = \sum_{i \in I} \mathcal{L}_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$ -->
+$$L_{out}^{sup} = \sum_{i \in I} L_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$
+<!-- $$\ell_{out}^{sup} = \sum_{i \in I} \ell_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$ -->
+
+where:
+* $I$ is a set of all books from batch
+* $\tau$ is a temperature parameter
+* $\cdot$ is a dot product
+* $P(i)$ is a set of positive examples for $i$ (in our case it is other book from pair)
+* $A(i)$ is a set of negative examples for $i$ (in our case it is all other books)
 
 ## Results
 
-### Detailed results 
+### Detailed results
 Values are presented in percents (tested on validation set)
 
-||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
-||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
-model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall
 Simple_approach True f1 f1 (baseline) | 3 | 6 | 1 | 7 | 13 | 5 | 5 | 5 | 5 | 5 | 8 | 8
 Simple_approach True f2 f1 | 3 | 7 | 1 | 7 | 13 | 5 | 5 | 5 | 5 | 5 | 8 | 8
 Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
@@ -193,10 +204,10 @@ Book_embedding_approach f5 f3 False | 1 | 2 | 0 | 2 | 5 | 2 | 1 | 1 | 1 | 1 | 3 
 
 Models with the best results (smaller table to easier comparison)
 
-||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
-||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
-model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall
 Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
 Simple_approach True f3 f2 | 4 | 10 | 2 | 10 | 22 | 10 | 8 | 8 | 7 | 7 | 18 | 17
 Simple_approach True f3 f3 | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 21 | 20
@@ -212,12 +223,12 @@ Book_embedding_approach f3 f2 False | 4 | 9 | 2 | 9 | 22 | 10 | 8 | 8 | 7 | 7 | 
 Book_embedding_approach f3 f3 False | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 21 | 20
 
 
-Best models from each model type 
+Best models from each model type
 
-||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
-||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
-model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall
 Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
 User_embeddings | 4 | 8 | 2 | 8 | 20 | 7 | 7 | 6 | 6 | 6 | 16 | 16
 User_embeddings2 4 | 5 | 10 | 2 | 10 | 23 | 10 | 9 | 8 | 7 | 7 | 20 | 19
@@ -241,20 +252,20 @@ Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 24 | 10 | 10 | 10 | 9 | 
 
 We see that there is almost no difference between results on validation and test set. Both of them were generated in a similar manner and are big. Thus, this is not a surprise.
 
-### Summary 
+### Summary
 
 - We analysed the dataset and split it into train, validation and test.
 - We deviced ideas and models for solution to our problem.
-- We trained description embeddings and book embeddings. 
-- We created a few models with different ideas and hyperparametes. 
+- We trained description embeddings and book embeddings.
+- We created a few models with different ideas and hyperparametes.
 - We analysed performance of our models and embedding to make them better.
 - We tested models and presented results.
 
 Training models was very hard, since the dataset was big and the models were learning slowly.
 
-### Conclusions 
+### Conclusions
 
-Embeddings seem to not be trained well enough, since they work better on L2 metric instead of cosine similarity. This is weird and unexpected, since they were trained on consine similarity loss. Most of the best performing models had pretty similar results. This suggests that there is some obstacle none of them was able to pass. The models final performance was pretty nice. For a given book with at least 20 reviews it suggested almost 5 users that would read it. This means that in real life if we are given a book that has potential we would likely promote it.      
+Embeddings seem to not be trained well enough, since they work better on L2 metric instead of cosine similarity. This is weird and unexpected, since they were trained on consine similarity loss. Most of the best performing models had pretty similar results. This suggests that there is some obstacle none of them was able to pass. The models final performance was pretty nice. For a given book with at least 20 reviews it suggested almost 5 users that would read it. This means that in real life if we are given a book that has potential we would likely promote it.
 
 Embeddings of description performed well and adding rest of book data to the embedding training process did not improve them. This is quite intuitive, since description of the book is long in comparison to other book data like author or publisher.
 

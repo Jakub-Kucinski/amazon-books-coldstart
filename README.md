@@ -1,5 +1,6 @@
 # Table of contents
 - [Table of contents](#table-of-contents)
+- [Project report](#project-report)
 - [Installation](#installation)
   - [Environment setup](#environment-setup)
   - [Pre-commit installation](#pre-commit-installation)
@@ -9,6 +10,11 @@
   - [Data preprocessing](#data-preprocessing)
   - [Embeddings creation](#embeddings-creation)
     - [Usage](#usage)
+
+
+# Project report
+
+Comprehensive project report covering problem description, methodology, results and conclusions can be found in [data/08_reporting/project_report.md](data/08_reporting/project_report.md) file.
 
 # Installation
 
