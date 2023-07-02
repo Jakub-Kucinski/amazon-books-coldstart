@@ -142,7 +142,9 @@ Creating book embedding consisted of a few steps:
 * The other embedding needed was author, category and publisher. We opted for torch trainable embeddings. We used `nn.Embedding` for publisher and `nn.EmbeddingBag` for author and category. Then we concatenated all embeddings and passed them through a few linear layers to get the final embedding.
 * The last step was to design loss function. For this purpose we used [pytorch-metric-learing](https://kevinmusgrave.github.io/pytorch-metric-learning/). We wanted two books to be close (cosine similarity) if they were read by the same user. We chose [`SupConLoss`](https://kevinmusgrave.github.io/pytorch-metric-learning/losses/#supconloss) and wrapped it in [`SelfSupervisedLoss`](https://kevinmusgrave.github.io/pytorch-metric-learning/losses/#selfsupervisedloss). This way we were able to train model in batches where each batch contained a sef of pairs of books. We used `Adam` optimizer with learning rate `0.0001`.
 
-$$\mathcal{L}_{out}^{sup} = \sum_{i \in I} \mathcal{L}_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$
+<!-- $$\mathcal{L}_{out}^{sup} = \sum_{i \in I} \mathcal{L}_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$ -->
+$$L_{out}^{sup} = \sum_{i \in I} L_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$
+<!-- $$\ell_{out}^{sup} = \sum_{i \in I} \ell_{out,i}^{sup} = \sum_{i \in I} \frac{-1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp (z_i\cdot z_p / \tau)}{\sum_{a \in A(i)} \exp (z_i \cdot z_a / \tau)},$$ -->
 
 where:
 * $I$ is a set of all books from batch
