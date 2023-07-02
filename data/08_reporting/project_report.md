@@ -6,28 +6,28 @@
   - [Problem description](#problem-description)
     - [Dataset](#dataset)
     - [Problem statement](#problem-statement)
-    - [Metrics RZEPA](#metrics-rzepa)
+    - [Metrics](#metrics)
       - [Ways to compute metrics](#ways-to-compute-metrics)
       - [Dataset](#dataset-1)
       - [How many users to query](#how-many-users-to-query)
   - [Methods (idea)](#methods-idea)
-      - [First model idea RZEPA](#first-model-idea-rzepa)
-      - [Second model idea RZEPA](#second-model-idea-rzepa)
+      - [First model idea](#first-model-idea)
+      - [Second model idea](#second-model-idea)
     - [Book embeddings model](#book-embeddings-model)
   - [Description of the implementation (details)](#description-of-the-implementation-details)
-    - [First model idea RZEPA](#first-model-idea-rzepa-1)
-      - [Simple\_approach RZEPA](#simple_approach-rzepa)
-      - [Book\_embedding\_approach RZEPA](#book_embedding_approach-rzepa)
-    - [Second model idea RZEPA](#second-model-idea-rzepa-1)
+    - [First model idea](#first-model-idea-1)
+      - [Simple\_approach](#simple_approach)
+      - [Book\_embedding\_approach](#book_embedding_approach)
+    - [Second model idea](#second-model-idea-1)
       - [User\_embeddings](#user_embeddings)
       - [User\_embeddings2](#user_embeddings2)
       - [User\_embeddings3](#user_embeddings3)
     - [FAISS](#faiss)
     - [Model embeddings and training](#model-embeddings-and-training)
   - [Results](#results)
-    - [Detailed results RZEPA](#detailed-results-rzepa)
-    - [Summary RZEPA](#summary-rzepa)
-    - [Conclusions RZEPA](#conclusions-rzepa)
+    - [Detailed results](#detailed-results)
+    - [Summary](#summary)
+    - [Conclusions](#conclusions)
     - [Perspectives](#perspectives)
 
 ## Problem description
@@ -47,7 +47,7 @@ Links to report notebooks, dataset description
 
 We decided to tackle the 'cold start' problem. Read more on [Wikipedia](https://en.wikipedia.org/wiki/Cold_start_(recommender_systems)#New_item). Given a new book, we want to recommend it to users that will actually read it. It's not a trivial problem because we can use only book's metadata.
 
-### Metrics RZEPA
+### Metrics 
 Problem task: given book predict users that will read it.
 
 We use a few metrics build from a few blocks described below. First has 2 possibilities, second 3 possibilities and third 2 possibilities what gives 12 values in total. We report the average value over the selected dataset for those metrics.
@@ -70,14 +70,14 @@ We query for $20$ and $r$ users. $20$ users seems to be a good benchmark for a n
 
 ## Methods (idea)
 
-#### First model idea RZEPA
+#### First model idea 
 For a query:
 - find books closets to ours (using similarity measure between books)
 - for those books rate users that rated books that are similar to the one from the query
 
 Our baseline algorithm used information about book's authors, categories and publisher to define similarity of books. It is Simple_approach(True, f1, f1). To define similarity measure we used information about book's authors, categories, publisher, description embedding and book embedding.
 
-#### Second model idea RZEPA
+#### Second model idea 
 Embed users into a space based on embeddings of book they reviewed. Then, for a query search for users closest to the book embedding. To embed we used description embedding and book embedding.
 
 ### Book embeddings model
@@ -87,9 +87,9 @@ This approach tries to utilize deep learning. The main idea is to create an embe
 
 ## Description of the implementation (details)
 
-### First model idea RZEPA
+### First model idea 
 
-#### Simple_approach RZEPA
+#### Simple_approach 
 Books similarity is counted as follows:
 (10 x number_of_same_authors + 1 x (same_publisher) + 5 x (same_category)) * (add_fixed_part == True) + distance_mapping(distance) x (is_in_clostest_books).
 We used the following distance mapping functions:
@@ -107,13 +107,13 @@ We used the following scoreMapping functions:
 
 For a given query we query for 20 * number_of_users_to_return books and then we find best number_of_users_to_return users based on those books.
 
-#### Book_embedding_approach RZEPA
+#### Book_embedding_approach 
 
 This solution differs from Simple_approach in computing books similarity. It uses books embedding to compute the similarity and then maps it using funcitons f1-f4 described above and identity function. The similarity can be computed using cosine similarity and L2 norm (this can be specified when creating the model).
 
 The second part of this algorithm is the same as in Simple_approach.
 
-### Second model idea RZEPA
+### Second model idea 
 
 #### User_embeddings
 
@@ -144,11 +144,112 @@ Creating book embedding consisted of a few steps:
 
 ## Results
 
-### Detailed results RZEPA
+### Detailed results 
+Values are presented in percents (tested on validation set)
 
-### Summary RZEPA
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+Simple_approach True f1 f1 (baseline) | 3 | 6 | 1 | 7 | 13 | 5 | 5 | 5 | 5 | 5 | 8 | 8
+Simple_approach True f2 f1 | 3 | 7 | 1 | 7 | 13 | 5 | 5 | 5 | 5 | 5 | 8 | 8
+Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
+Simple_approach True f4 f1 | 2 | 5 | 1 | 6 | 10 | 4 | 4 | 3 | 3 | 3 | 6 | 5
+Simple_approach True f1 f2 | 3 | 6 | 1 | 6 | 13 | 5 | 5 | 5 | 4 | 4 | 8 | 7
+Simple_approach True f2 f2 | 2 | 6 | 1 | 6 | 12 | 5 | 4 | 4 | 4 | 4 | 7 | 7
+Simple_approach True f3 f2 | 4 | 10 | 2 | 10 | 22 | 10 | 8 | 8 | 7 | 7 | 18 | 17
+Simple_approach True f4 f2 | 2 | 5 | 1 | 5 | 9 | 3 | 3 | 3 | 3 | 3 | 5 | 5
+Simple_approach True f1 f3 | 2 | 5 | 1 | 5 | 12 | 4 | 4 | 4 | 3 | 3 | 7 | 6
+Simple_approach True f2 f3 | 2 | 5 | 1 | 5 | 11 | 4 | 3 | 3 | 2 | 2 | 6 | 6
+Simple_approach True f3 f3 | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 21 | 20
+Simple_approach True f4 f3 | 2 | 4 | 1 | 4 | 8 | 3 | 2 | 2 | 2 | 2 | 4 | 4
+Simple_approach False f2 f1 | 2 | 6 | 1 | 6 | 11 | 4 | 4 | 4 | 3 | 3 | 6 | 6
+Simple_approach False f1 f1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+Simple_approach False f3 f1 | 5 | 11 | 2 | 12 | 23 | 10 | 10 | 10 | 9 | 8 | 21 | 21
+Simple_approach False f4 f1 | 2 | 5 | 1 | 5 | 8 | 3 | 3 | 2 | 2 | 2 | 4 | 4
+Simple_approach False f1 f2 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+Simple_approach False f2 f2 | 2 | 5 | 1 | 5 | 10 | 4 | 3 | 3 | 3 | 3 | 6 | 6
+Simple_approach False f3 f2 | 4 | 10 | 2 | 10 | 22 | 9 | 8 | 8 | 7 | 7 | 17 | 17
+Simple_approach False f4 f2 | 1 | 4 | 1 | 4 | 7 | 2 | 2 | 2 | 2 | 2 | 4 | 4
+Simple_approach False f1 f3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+Simple_approach False f2 f3 | 2 | 4 | 1 | 4 | 9 | 3 | 2 | 2 | 2 | 2 | 5 | 5
+Simple_approach False f3 f3 | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 20 | 20
+Simple_approach False f4 f3 | 1 | 3 | 1 | 4 | 6 | 2 | 2 | 2 | 1 | 1 | 3 | 3
+User_embeddings | 4 | 8 | 2 | 8 | 20 | 7 | 7 | 6 | 6 | 16 | 16
+User_embeddings2 1 | 4 | 8 | 2 | 8 | 20 | 9 | 7 | 7 | 6 | 6 | 16 | 16
+User_embeddings2 4 | 5 | 10 | 2 | 10 | 23 | 10 | 9 | 8 | 7 | 7 | 20 | 19
+User_embeddings3 4 True | 0 | 1 | 0 | 1 | 2 | 1 | 1 | 0 | 0 | 0 | 2 | 2
+User_embeddings3 4 False | 4 | 8 | 2 | 8 | 20 | 8 | 7 | 7 | 6 | 6 | 17 | 16
+Book_embedding_approach f5 f1 True | 2 | 4 | 1 | 4 | 9 | 3 | 3 | 3 | 2 | 2 | 5 | 5
+Book_embedding_approach f2 f1 False | 4 | 8 | 2 | 8 | 19 | 8 | 8 | 8 | 7 | 7 | 15 | 15
+Book_embedding_approach f2 f2 False | 2 | 3 | 1 | 3 | 11 | 4 | 4 | 4 | 4 | 3 | 5 | 5
+Book_embedding_approach f2 f3 False | 4 | 7 | 2 | 8 | 17 | 7 | 7 | 7 | 6 | 6 | 14 | 14
+Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 23 | 10 | 10 | 10 | 8 | 8 | 21 | 21
+Book_embedding_approach f3 f2 False | 4 | 9 | 2 | 9 | 22 | 10 | 8 | 8 | 7 | 7 | 18 | 17
+Book_embedding_approach f3 f3 False | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 21 | 20
+Book_embedding_approach f5 f1 False | 1 | 3 | 1 | 3 | 6 | 2 | 2 | 2 | 1 | 1 | 4 | 3
+Book_embedding_approach f5 f2 False | 1 | 3 | 1 | 3 | 5 | 2 | 1 | 1 | 1 | 1 | 3 | 3
+Book_embedding_approach f5 f3 False | 1 | 2 | 0 | 2 | 5 | 2 | 1 | 1 | 1 | 1 | 3 | 3
 
-### Conclusions RZEPA
+Models with the best results (smaller table to easier comparison)
+
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
+Simple_approach True f3 f2 | 4 | 10 | 2 | 10 | 22 | 10 | 8 | 8 | 7 | 7 | 18 | 17
+Simple_approach True f3 f3 | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 21 | 20
+Simple_approach False f3 f1 | 5 | 11 | 2 | 12 | 23 | 10 | 10 | 10 | 9 | 8 | 21 | 21
+Simple_approach False f3 f2 | 4 | 10 | 2 | 10 | 22 | 9 | 8 | 8 | 7 | 7 | 17 | 17
+Simple_approach False f3 f3 | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 20 | 20
+User_embeddings | 4 | 8 | 2 | 8 | 20 | 7 | 7 | 6 | 6 | 16 | 16
+User_embeddings2 1 | 4 | 8 | 2 | 8 | 20 | 9 | 7 | 7 | 6 | 6 | 16 | 16
+User_embeddings2 4 | 5 | 10 | 2 | 10 | 23 | 10 | 9 | 8 | 7 | 7 | 20 | 19
+User_embeddings3 4 False | 4 | 8 | 2 | 8 | 20 | 8 | 7 | 7 | 6 | 6 | 17 | 16
+Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 23 | 10 | 10 | 10 | 8 | 8 | 21 | 21
+Book_embedding_approach f3 f2 False | 4 | 9 | 2 | 9 | 22 | 10 | 8 | 8 | 7 | 7 | 18 | 17
+Book_embedding_approach f3 f3 False | 5 | 10 | 2 | 10 | 22 | 10 | 9 | 9 | 8 | 8 | 21 | 20
+
+
+Best models from each model type 
+
+||20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|20 users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict|number_of_reviews users to predict| 
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | :---: | :---: |
+||      all books     | all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |     all books     |all books     |  below 20 reviews  | below 20 reviews  |  above 19 reviews  | above 19 reviews  |   
+model name                              | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall | precision | recall 
+Simple_approach True f3 f1 | 5 | 12 | 3 | 12 | 23 | 10 | 10 | 10 | 9 | 9 | 22 | 21
+User_embeddings | 4 | 8 | 2 | 8 | 20 | 7 | 7 | 6 | 6 | 16 | 16
+User_embeddings2 4 | 5 | 10 | 2 | 10 | 23 | 10 | 9 | 8 | 7 | 7 | 20 | 19
+User_embeddings3 4 False | 4 | 8 | 2 | 8 | 20 | 8 | 7 | 7 | 6 | 6 | 17 | 16
+Book_embedding_approach f3 f1 False | 5 | 11 | 2 | 11 | 23 | 10 | 10 | 10 | 8 | 8 | 21 | 21
+
+We see that many approaches led to a very similar results. This suggest that creating significantly better solution is harder and requires a new trick or technique. Our models reached 23% percents precision on books with at least 20 reviews which sounds like a very good result.
+
+
+TODO RZEPA: final results on "test" and a few conclusions of the results. Add something to summary or conclusions if there is something unusual.
+
+### Summary 
+
+- We analysed the dataset and split it into train, validation and test.
+- We deviced ideas and models for solution to our problem.
+- We trained description embeddings and book embeddings. 
+- We created a few models with different ideas and hyperparametes. 
+- We analysed performance of our models and embedding to make them better.
+- We tested models and presented results.
+
+Training models was very hard, since the dataset was big and the models were learning slowly.
+
+### Conclusions 
+
+Embeddings seem to not be trained well enough, since they work better on L2 metric instead of cosine similarity. This is weird and unexpected, since they were trained on consine similarity loss. Most of the best performing models had pretty similar results. This suggests that there is some obstacle none of them was able to pass. The models final performance was pretty nice. For a given book with at least 20 reviews it suggested almost 5 users that would read it. This means that in real life if we are given a book that has potential we would likely promote it.      
+
+Training models on huge dataset is not an easy thing. The computations are slow, models are learning very slowly, analysis of the dataset is hard, since it is not possible to "go through" the dataset. Also, recommening books sounds like a hard task for a few reasons:
+- the fact if people like the book or not depends also on factors other than the book itself (our humor etc.)
+- some people may be forced to read different books (for school, studies etc.) and it is not possible for our models to detect such cases
+- from our perspective it would be hard to recommend a good book for us
+- people can make reviews of books randomly
+- the final score people give is just a number and does not contains much information in comparison to the whole opinion they had about the book
 
 ### Perspectives
 
